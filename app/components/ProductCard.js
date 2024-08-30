@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Notification from './Notification'; // Import the Notification component
+import Notification from './Notification';
+import { useCart } from '../context/CartContext'; // Import the Cart context
 
 const ProductCard = ({ product }) => {
   const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
+  const { addToCart } = useCart(); // Access the addToCart function
 
   const handleCardClick = () => {
     window.open(`/products/${product._id}`, '_blank');
   };
 
   const handleAddToCart = () => {
-    // Add to cart logic here
+    addToCart(product); // Add the product to the cart
     setShowNotification(true);
   };
 
@@ -40,7 +42,6 @@ const ProductCard = ({ product }) => {
         </button>
       </div>
 
-      {/* Show notification when a product is added to the cart */}
       {showNotification && (
         <Notification
           message="Product added to cart!"

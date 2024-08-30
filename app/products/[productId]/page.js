@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { getProductDetails } from '../../api/productDetails';
 import Notification from '../../components/Notification'; // Import the Notification component
+import { useCart } from '../../context/CartContext'; // Import the Cart context
 
 export default function ProductDetails() {
   const pathname = usePathname();
@@ -12,6 +13,8 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
+  
+  const { addToCart } = useCart(); // Access the addToCart function from CartContext
 
   useEffect(() => {
     if (productId) {
@@ -31,8 +34,10 @@ export default function ProductDetails() {
   }, [productId]);
 
   const handleAddToCart = () => {
-    // Add to cart logic here
-    setShowNotification(true);
+    if (product) {
+      addToCart(product); // Add the product to the cart
+      setShowNotification(true);
+    }
   };
 
   if (loading) return <div className="text-center text-gray-500">Loading...</div>;
@@ -67,7 +72,6 @@ export default function ProductDetails() {
 
         <div className="md:col-span-2 p-6">
           <h1 className="text-2xl font-bold mb-4">{product.product_name}</h1>
-          <p className="text-lg text-gray-700 mb-4">{product.description}</p>
           <p className="text-xl font-semibold mb-4">Price: ${product.discounted_price}</p>
           <div className="space-y-4">
             <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
@@ -91,9 +95,13 @@ export default function ProductDetails() {
               />
             </div>
           </div>
+          <p className="text-lg text-gray-700 mb-4">{product.description}</p>
+          
+         
+          
         </div>
       </div>
-
+              
       {/* Show notification when a product is added to the cart */}
       {showNotification && (
         <Notification
