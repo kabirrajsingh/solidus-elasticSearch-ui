@@ -21,76 +21,76 @@ const product = {
 export default function ProductDetails() {
   return (
     <div className="container mx-auto p-6 bg-white mt-3 mb-2">
-     
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div className="md:col-span-3 p-6 relative">
-  {/* Main Image */}
-  <div className="relative">
-    <img
-      src={product.image[0]}
-      alt={product.product_name}
-      className="w-full h-auto object-cover rounded-lg"
-    />
-  </div>
+          {/* Main Image */}
+          <div className="relative">
+            <img
+              src={product.image[0]}
+              alt={product.product_name}
+              className="w-full h-auto object-cover rounded-lg"
+            />
+          </div>
 
-  {/* Thumbnails */}
-  <div className="absolute top-0 right-0 md:top-auto md:right-auto md:bottom-0 md:left-0 p-4 md:relative flex md:flex-col space-x-2 md:space-x-0 md:space-y-2">
-    {product.image.map((img, index) => (
-      <img
-        key={index}
-        src={img}
-        alt={`${product.product_name} - thumbnail ${index + 1}`}
-        className="w-20 h-20 object-cover cursor-pointer border rounded-lg"
-        onClick={() => document.querySelector('img[alt="main"]').src = img}
-      />
-    ))}
-  </div>
-</div>
+          {/* Thumbnails */}
+          <div className="absolute top-0 right-0 md:top-auto md:right-auto md:bottom-0 md:left-0 p-4 md:relative flex md:flex-col space-x-2 md:space-x-0 md:space-y-2">
+            {product.image.map((img, index) => (
+              <img
+                key={index}
+                src={img}
+                alt={`${product.product_name} - thumbnail ${index + 1}`}
+                className="w-20 h-20 object-cover cursor-pointer border rounded-lg"
+                onClick={() => document.querySelector('img[alt="main"]').src = img}
+              />
+            ))}
+          </div>
+        </div>
 
-          <div className="md:col-span-2  p-6">
-            <h1 className="text-2xl font-bold mb-4">{product.product_name}</h1>
-            <p className="text-lg text-gray-700 mb-4">{product.description}</p>
-            <p className="text-xl font-semibold mb-4">Price: ${product.discounted_price}</p>
-            <div className="space-y-4">
-              <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
-                Buy Now
-              </button>
-              <button className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
-                Add to Cart
-              </button>
-              <div className="flex items-center space-x-4">
-                <label htmlFor="quantity" className="font-semibold">Quantity:</label>
-                <input
-                  type="number"
-                  id="quantity"
-                  name="quantity"
-                  min="1"
-                  defaultValue="1"
-                  className="w-16 border border-gray-300 rounded-lg px-2 py-1"
-                />
-              </div>
-            </div>
-            <div className="mt-6 space-y-2">
-              <h2 className="text-lg font-semibold">Product Details:</h2>
-              <ul className="list-disc pl-5">
-                <li>✔️ Authentic products</li>
-                <li>✔️ Shipped from Japan</li>
-                <li>✔️ Worldwide delivery</li>
-                <li>✔️ Secured checkout</li>
-              </ul>
-            </div>
-            <div className="mt-6 space-x-4">
-              <a href={`https://www.facebook.com/sharer.php?u=${product.product_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
-                Share on Facebook
-              </a>
-              <a href={`https://twitter.com/share?text=${encodeURIComponent(product.product_name)}&url=${product.product_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-600">
-                Tweet on Twitter
-              </a>
-              <a href={`https://pinterest.com/pin/create/button/?url=${product.product_url}&media=${product.image[0]}&description=${encodeURIComponent(product.product_name)}`} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-700">
-                Pin on Pinterest
-              </a>
+        <div className="md:col-span-2  p-6">
+          <h1 className="text-2xl font-bold mb-4">{product.product_name}</h1>
+          <p className="text-lg text-gray-700 mb-4">{product.description}</p>
+          <p className="text-xl font-semibold mb-4">Price: ${product.discounted_price}</p>
+          <div className="space-y-4">
+            <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+              Buy Now
+            </button>
+            <button className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+              Add to Cart
+            </button>
+            <div className="flex items-center space-x-4">
+              <label htmlFor="quantity" className="font-semibold">Quantity:</label>
+              <input
+                type="number"
+                id="quantity"
+                name="quantity"
+                min="1"
+                defaultValue="1"
+                className="w-16 border border-gray-300 rounded-lg px-2 py-1"
+              />
             </div>
           </div>
+          <div className="mt-6 space-y-2">
+            <h2 className="text-lg font-semibold">Product Details:</h2>
+            <ul className="list-disc pl-5">
+              <li>✔️ Authentic products</li>
+              <li>✔️ Shipped from Japan</li>
+              <li>✔️ Worldwide delivery</li>
+              <li>✔️ Secured checkout</li>
+            </ul>
+          </div>
+          <div className="mt-6 space-x-4">
+            <a href={`https://www.facebook.com/sharer.php?u=${product.product_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+              Share on Facebook
+            </a>
+            <a href={`https://twitter.com/share?text=${encodeURIComponent(product.product_name)}&url=${product.product_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-600">
+              Tweet on Twitter
+            </a>
+            <a href={`https://pinterest.com/pin/create/button/?url=${product.product_url}&media=${product.image[0]}&description=${encodeURIComponent(product.product_name)}`} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-700">
+              Pin on Pinterest
+            </a>
+          </div>
+        </div>
 
 
       </div>
