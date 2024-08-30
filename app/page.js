@@ -13,7 +13,7 @@ export default function Home() {
     const fetchProducts = async () => {
       try {
         // console.log("here");
-        const data = await getPaginatedProducts(pageNumber);
+        const data = await getPaginatedProducts(20,pageNumber);
         setProducts(data); // Update the state with the fetched data
       } catch (error) {
         console.error("Error fetching products:", error);

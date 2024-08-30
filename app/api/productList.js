@@ -4,10 +4,10 @@ import { API_ENDPOINTS } from '../utils/config';
 export const getPaginatedProducts = async (pageNumber = 1, pageSize = 20) => {
     try {
         // Construct the URL with pagination parameters
-        const url = `${API_ENDPOINTS.PRODUCTS_PAGINATED}/${pageSize}/${pageNumber}`;
+        const url = `${API_ENDPOINTS.PRODUCTS_PAGINATED}`;
         console.log(url)
         // Make the GET request
-        const response = await axios.get(url);
+        const response = await axios.post(url,{"page_size":pageSize,"page_number":pageNumber});
         console.log(response)
         // Return the response data 
         return response.data;
