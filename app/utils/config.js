@@ -1,8 +1,10 @@
-export const API_BASE_URL = 'https://kzur4id4cf.execute-api.ap-south-1.amazonaws.com'; 
-// export const API_BASE_URL = 'http://localhost:8080'; 
+// export const API_BASE_URL = 'https://kzur4id4cf.execute-api.ap-south-1.amazonaws.com'; 
+export const API_BASE_URL = 'http://localhost:8080'; 
 export const API_ENDPOINTS={
     START_SESSION:`${API_BASE_URL}/start-session`,
-    CHAT:`${API_BASE_URL}/chat`
+    CHAT:`${API_BASE_URL}/chat`,
+   PRODUCTS_PAGINATED :`${API_BASE_URL}/api/v1/products/paginated`,
+   PRODUCT:`${API_BASE_URL}/api/v1/products`
 }
 
 export const COLORS={

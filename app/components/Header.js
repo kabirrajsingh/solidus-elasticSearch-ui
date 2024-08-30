@@ -1,8 +1,11 @@
+"use client"
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { FaSearch, FaShoppingCart, FaBars } from 'react-icons/fa';
 
 export default function Header() {
+  const router=useRouter();
   return (
     <header className="bg-white shadow-md p-4  w-full">
       <div className="container mx-auto">
@@ -15,6 +18,7 @@ export default function Header() {
               alt="Website Logo"
               width={150}
               height={50}
+              onClick={()=>{router.push("/")}}
             />
           </div>
           <div className="flex items-center space-x-4">
