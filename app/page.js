@@ -44,9 +44,9 @@ export default function Home() {
           <button className="text-white bg-red-600 hover:bg-red-700 transition-all px-4 py-2 rounded">
             Update
           </button>
-        </div>
+          </div></div>
         <ProductList products={products} />
-      </div>
+      
     </div>
   );
 }

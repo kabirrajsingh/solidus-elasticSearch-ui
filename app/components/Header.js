@@ -25,7 +25,7 @@ export default function Header() {
             <button className="text-gray-700 hover:text-red-600">
               <FaSearch />
             </button>
-            <button className="text-gray-700 hover:text-red-600">
+            <button className="text-gray-700 hover:text-red-600" onClick={()=>{router.push("/cart")}}>
               <FaShoppingCart />
             </button>
           </div>

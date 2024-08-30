@@ -1,11 +1,18 @@
-// components/ProductCard.js
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Notification from './Notification'; // Import the Notification component
 
 const ProductCard = ({ product }) => {
   const router = useRouter();
+  const [showNotification, setShowNotification] = useState(false);
 
   const handleCardClick = () => {
-    window.open(`/products/${product._id}`, '_blank'); // Opens in a new tab
+    window.open(`/products/${product._id}`, '_blank');
+  };
+
+  const handleAddToCart = () => {
+    // Add to cart logic here
+    setShowNotification(true);
   };
 
   return (
@@ -22,10 +29,25 @@ const ProductCard = ({ product }) => {
       <p className="text-gray-600 mt-1 text-sm truncate">{product.compact_description}</p>
       <div className="mt-4 flex justify-between items-center">
         <span className="text-xl font-bold text-red-600">{`$${product.discounted_price.toFixed(2)}`}</span>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300">
-          Buy Now
+        <button
+          className="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-lg transition-colors duration-300"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent card click
+            handleAddToCart();
+          }}
+        >
+          Add to Cart
         </button>
       </div>
+
+      {/* Show notification when a product is added to the cart */}
+      {showNotification && (
+        <Notification
+          message="Product added to cart!"
+          type="success"
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
   );
 };

@@ -1,22 +1,20 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { getProductDetails } from '../../api/productDetails'; // Adjust path as needed
+import { getProductDetails } from '../../api/productDetails';
+import Notification from '../../components/Notification'; // Import the Notification component
 
 export default function ProductDetails() {
-  const pathname = usePathname(); // Get the current pathname
-  const searchParams = useSearchParams(); // Get search parameters if needed
-
-  // Extract the productId from pathname
+  const pathname = usePathname();
   const productId = pathname.split('/').pop();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     if (productId) {
-        console.log("Product id is"+productId)
       const fetchProductDetails = async () => {
         try {
           setLoading(true);
@@ -31,6 +29,11 @@ export default function ProductDetails() {
       fetchProductDetails();
     }
   }, [productId]);
+
+  const handleAddToCart = () => {
+    // Add to cart logic here
+    setShowNotification(true);
+  };
 
   if (loading) return <div className="text-center text-gray-500">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
@@ -70,7 +73,10 @@ export default function ProductDetails() {
             <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
               Buy Now
             </button>
-            <button className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+            <button 
+              className="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
+              onClick={handleAddToCart} // Add to cart handler
+            >
               Add to Cart
             </button>
             <div className="flex items-center space-x-4">
@@ -85,28 +91,17 @@ export default function ProductDetails() {
               />
             </div>
           </div>
-          <div className="mt-6 space-y-2">
-            <h2 className="text-lg font-semibold">Product Details:</h2>
-            <ul className="list-disc pl-5">
-              <li>✔️ Authentic products</li>
-              <li>✔️ Shipped from Japan</li>
-              <li>✔️ Worldwide delivery</li>
-              <li>✔️ Secured checkout</li>
-            </ul>
-          </div>
-          <div className="mt-6 space-x-4">
-            <a href={`https://www.facebook.com/sharer.php?u=${product.product_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
-              Share on Facebook
-            </a>
-            <a href={`https://twitter.com/share?text=${encodeURIComponent(product.product_name)}&url=${product.product_url}`} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-600">
-              Tweet on Twitter
-            </a>
-            <a href={`https://pinterest.com/pin/create/button/?url=${product.product_url}&media=${product.image[0]}&description=${encodeURIComponent(product.product_name)}`} target="_blank" rel="noopener noreferrer" className="text-red-500 hover:text-red-700">
-              Pin on Pinterest
-            </a>
-          </div>
         </div>
       </div>
+
+      {/* Show notification when a product is added to the cart */}
+      {showNotification && (
+        <Notification
+          message="Product added to cart!"
+          type="success"
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
   );
 }

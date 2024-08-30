@@ -111,9 +111,10 @@ export default function Chat() {
                     ))}
 
                     {/* Render Product Cards */}
-                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-80vh mr-20">
                         {products.map((product, index) => (
-                            <ProductCard key={index} product={product} />
+                            <div className='w-50 h-50'>
+                            <ProductCard key={index} product={product} /></div>
                         ))}
                     </div>
 
@@ -123,7 +124,7 @@ export default function Chat() {
                     <div className="flex items-center mt-4">
                         <input 
                             type="text" 
-                            className={`flex-grow px-4 py-2 border rounded-lg placeholder-gray-400 focus:outline-none ${COLORS.INPUT_LIGHT} ${COLORS.RAKUTEN_RED}`} 
+                            className={` flex-grow px-4 py-2 border rounded-lg placeholder-gray-400 focus:outline-none ${COLORS.INPUT_LIGHT} ${COLORS.RAKUTEN_RED}`} 
                             placeholder="Type your message..." 
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
