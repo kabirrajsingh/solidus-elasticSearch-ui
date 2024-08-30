@@ -23,29 +23,29 @@ export default function ProductDetails() {
     <div className="container mx-auto p-6 bg-white mt-3 mb-2">
      
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <div className="md:col-span-3 p-6">
+        <div className="md:col-span-3 p-6 relative">
+  {/* Main Image */}
   <div className="relative">
     <img
       src={product.image[0]}
       alt={product.product_name}
       className="w-full h-auto object-cover rounded-lg"
-      id="main-image"
     />
-    <div className="absolute top-0 right-0 p-4 space-y-2">
-      <div className="flex flex-col space-y-2">
-        {product.image.map((img, index) => (
-          <img
-            key={index}
-            src={img}
-            alt={`${product.product_name} - thumbnail ${index + 1}`}
-            className="w-20 h-20 object-cover cursor-pointer border rounded-lg"
-            onClick={() => document.getElementById('main-image').src = img}
-          />
-        ))}
-      </div>
-    </div>
+  </div>
+
+  {/* Thumbnails */}
+  <div className="absolute top-0 right-0 md:top-auto md:right-auto md:bottom-0 md:left-0 p-4 md:relative flex md:flex-col space-x-2 md:space-x-0 md:space-y-2">
+    {product.image.map((img, index) => (
+      <img
+        key={index}
+        src={img}
+        alt={`${product.product_name} - thumbnail ${index + 1}`}
+        className="w-20 h-20 object-cover cursor-pointer border rounded-lg"
+        onClick={() => document.querySelector('img[alt="main"]').src = img}
+      />
+    ))}
+  </div>
 </div>
-        </div>
 
           <div className="md:col-span-2  p-6">
             <h1 className="text-2xl font-bold mb-4">{product.product_name}</h1>
