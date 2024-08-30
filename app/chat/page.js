@@ -2,9 +2,11 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { continueChat } from '../api/chat';
 import { startSession } from '../api/startSession';
+import { getProductDetails } from '../api/productDetails';
 import { SessionContext } from '../context/SessionContext';
 import { useAuth } from '@clerk/nextjs';
 import { COLORS } from '../utils/config';
+import ProductCard from '../components/ProductCard';
 
 export default function Chat() {
     const [messages, setMessages] = useState([]);
@@ -15,26 +17,24 @@ export default function Chat() {
         backgroundImage: `url("/bgs/default.jpg")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-    })
+    });
+    const [products, setProducts] = useState([]); // New state to store product details
     const { chatSessionId, setChatSessionId } = useContext(SessionContext);
     const { isLoaded, userId, sessionId, getToken } = useAuth();
     const messageEndRef = useRef(null);
-    
-    // Generate chatSessionId dynamically
+
     useEffect(() => {
         const newChatSessionId = Math.random().toString(36).substr(2, 9);
         setChatSessionId(newChatSessionId);
     }, []);
 
     useEffect(() => {
-        // Change background image based on the currentTopic
         const backgroundImage = currentTopic ? `/bgs/${currentTopic}.jpg` : '/bgs/default.jpg';
-    setBackgroundStyle({
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-    })
-        
+        setBackgroundStyle({
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+        });
     }, [currentTopic]);
 
     useEffect(() => {
@@ -44,11 +44,6 @@ export default function Chat() {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
-    useEffect(() => {
-        // This hook will run whenever currentTopic changes
-        // You can add additional logic here if needed
-    }, [currentTopic]);
 
     const handleStartSession = async () => {
         if (chatSessionId) {
@@ -71,7 +66,7 @@ export default function Chat() {
         addMessage(input, "user");
 
         try {
-            const { cur_state, text_content } = await continueChat(userId, chatSessionId, input);
+            const { cur_state, text_content, product_list } = await continueChat(userId, chatSessionId, input);
 
             if (cur_state === "completed") {
                 setIsChatActive(false);
@@ -79,6 +74,13 @@ export default function Chat() {
             } else {
                 setCurrentTopic(cur_state);
                 addMessage(text_content, "bot");
+
+                // Fetch product details
+                if (product_list && product_list.length > 0) {
+                    const productDetailsPromises = product_list.map(productId => getProductDetails(productId));
+                    const productsData = await Promise.all(productDetailsPromises);
+                    setProducts(productsData); // Store product details in state
+                }
             }
         } catch (error) {
             console.error('Error sending message:', error);
@@ -91,13 +93,9 @@ export default function Chat() {
         messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    // Construct background image URL dynamically
-    
-
     return (
         <div 
             className={`min-h-screen w-full flex flex-col ${COLORS.RAKUTEN_ROSE_BG}`}
-            
         >
             <div className={`flex-1 flex flex-col w-full mx-auto shadow-lg rounded-lg p-6  bg-white`}>
                 <h2 className={`text-xl font-semibold mb-4 text-center ${COLORS.RAKUTEN_RED}`}>
@@ -111,6 +109,14 @@ export default function Chat() {
                             </div>
                         </div>
                     ))}
+
+                    {/* Render Product Cards */}
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {products.map((product, index) => (
+                            <ProductCard key={index} product={product} />
+                        ))}
+                    </div>
+
                     <div ref={messageEndRef} /> {/* For auto-scrolling */}
                 </div>
                 {isChatActive ? (

@@ -6,10 +6,10 @@ export const getProductDetails = async (productId) => {
     console.log(productId)
     try {
         // Construct the URL with the product ID
-        const url = `${API_ENDPOINTS.PRODUCT}/${productId}`;
+        const url = `${API_ENDPOINTS.PRODUCT}`;
         console.log(url); // For debugging
         // Make the GET request
-        const response = await axios.get(url);
+        const response = await axios.post(url,{id:productId});
         console.log(response); // For debugging
         // Return the response data
         return response.data;
@@ -19,3 +19,4 @@ export const getProductDetails = async (productId) => {
         throw error;
     }
 };
+

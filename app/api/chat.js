@@ -7,6 +7,7 @@ export const continueChat = async (user_id,session_id, userInput) => {
             user_input: userInput,
             session_id :session_id
         });
+console.log(response.data)
         return response.data;
     } catch (error) {
         console.error('Error sending message:', error);
