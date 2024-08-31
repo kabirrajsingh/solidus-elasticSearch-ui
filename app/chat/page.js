@@ -84,10 +84,16 @@ export default function Chat() {
 
                 // Fetch product details
                 if (product_list && product_list.length > 0) {
-                    const productDetailsPromises = product_list.map(productId => getProductDetails(productId));
+                    console.log(product_list);
+                    const productDetailsPromises = product_list.map(product => {
+                        // Extract the product ID and format the payload
+                        const formattedProductId = product.prod_id;
+                        return getProductDetails(formattedProductId);
+                    });
                     const productsData = await Promise.all(productDetailsPromises);
                     setProducts(productsData); // Store product details in state
                 }
+                
             }
         } catch (error) {
             console.error('Error sending message:', error);

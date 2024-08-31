@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_ENDPOINTS } from '../utils/config';
 
 export const getProductDetails = async (productId) => {
+    console.log(productId)
     try {
         // Construct the URL with the product ID
         const url = `${API_ENDPOINTS.PRODUCT}`;
