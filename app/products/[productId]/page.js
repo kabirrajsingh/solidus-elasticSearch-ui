@@ -40,7 +40,7 @@ export default function ProductDetails() {
         const data = await getProductReviewScores(productId); // Pass productId to getReviewScores
         setReviewScores(data);
       } catch (error) {
-        setError('Failed to fetch review scores.');
+        console.log(error)
       }
     };
 
