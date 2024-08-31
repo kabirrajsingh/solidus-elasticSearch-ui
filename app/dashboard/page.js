@@ -1,9 +1,13 @@
 // app/dashboard/page.js
 "use client";
 import React, { useState, useEffect } from 'react';
-import LineChart from '../components/LineChart';
-import BarChart from '../components/BarChart';
-import PieChart from '../components/PieChart';
+import dynamic from 'next/dynamic';
+
+// Dynamically import chart components with no SSR
+const LineChart = dynamic(() => import('../components/LineChart'), { ssr: false });
+const BarChart = dynamic(() => import('../components/BarChart'), { ssr: false });
+const PieChart = dynamic(() => import('../components/PieChart'), { ssr: false });
+
 export default function Dashboard() {
   const [data, setData] = useState(null);
 
