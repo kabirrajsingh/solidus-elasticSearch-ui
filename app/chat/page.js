@@ -4,6 +4,7 @@ import { continueChat } from '../api/chat';
 import { startSession } from '../api/startSession';
 import { getProductDetails } from '../api/productDetails';
 import { SessionContext } from '../context/SessionContext';
+import { UserContext } from '../context/UserContext'; // Import UserContext
 import { useAuth } from '@clerk/nextjs';
 import { COLORS } from '../utils/config';
 import ProductCard from '../components/ProductCard';
@@ -22,10 +23,12 @@ export default function Chat() {
     const [products, setProducts] = useState([]); // New state to store product details
     const { chatSessionId, setChatSessionId } = useContext(SessionContext);
     const { isLoaded, userId, sessionId, getToken } = useAuth();
+    const { age, gender } = useContext(UserContext); // Get age and gender from context
     const messageEndRef = useRef(null);
 
     useEffect(() => {
-        const newChatSessionId = Math.random().toString(36).substr(2, 9);
+        const newChatSessionId = Math.floor(Math.random() * 100000); // Generates a random integer between 0 and 999,999,999
+
         setChatSessionId(newChatSessionId);
     }, []);
 
@@ -67,7 +70,7 @@ export default function Chat() {
         addMessage(input, "user");
 
         try {
-            const { cur_state, text_content, product_list } = await continueChat(userId, chatSessionId, input);
+            const { cur_state, text_content, product_list } = await continueChat(userId, chatSessionId, input, gender, age);
 
             if (cur_state === "completed") {
                 setIsChatActive(false);
