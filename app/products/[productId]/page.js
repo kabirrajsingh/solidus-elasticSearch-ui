@@ -27,6 +27,7 @@ export default function ProductDetails() {
         setLoading(true);
         const data = await getProductDetails(productId);
         setProduct(data);
+        console.log(data)
       } catch (error) {
         setError('Failed to fetch product details.');
       } finally {
