@@ -70,11 +70,14 @@ export default function Chat() {
         addMessage(input, "user");
 
         try {
-            const { cur_state, text_content, product_list } = await continueChat(userId, chatSessionId, input, gender, age);
+            const { cur_state, text_content, product_list ,new_place_req} = await continueChat(userId, chatSessionId, input, gender, age);
 
-            if (cur_state === "completed") {
+            if (cur_state === "exit") {
                 setIsChatActive(false);
                 addMessage("Chat ended. " + text_content, "bot");
+                if(!new_place_req){
+                    addMessage("Chat ended. " + JSON.stringify(new_place_req), "bot");
+                }
             } else {
                 setCurrentTopic(cur_state);
                 addMessage(text_content, "bot");
