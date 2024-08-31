@@ -48,7 +48,49 @@ export default function Chat() {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
-
+    function formatPlaceData(placeData) {
+        const { grocery_stores, medical_stores, resturants, new_place_name } = placeData;
+      
+        let message = `New Place Data for **${new_place_name}**:\n`;
+      
+        // Format Grocery Stores
+        if (grocery_stores && grocery_stores.length > 0) {
+          message += `\n**Grocery Stores:**\n`;
+          grocery_stores.forEach(store => {
+            message += `- **${store.name}**\n`;
+            message += `  - Address: ${store.vicinity}\n`;
+            message += `  - Rating: ${store.rating} (${store.user_ratings_total} ratings)\n`;
+            message += `  - Open Now: ${store.opening_hours.open_now ? "Yes" : "No"}\n`;
+          });
+        }
+      
+        // Format Medical Stores
+        if (medical_stores && medical_stores.length > 0) {
+          message += `\n**Medical Stores:**\n`;
+          medical_stores.forEach(store => {
+            message += `- **${store.name}**\n`;
+            message += `  - Address: ${store.vicinity}\n`;
+            message += `  - Rating: ${store.rating} (${store.user_ratings_total} ratings)\n`;
+            message += `  - Open Now: ${store.opening_hours.open_now ? "Yes" : "No"}\n`;
+          });
+        }
+      
+        // Format Restaurants
+        if (resturants && resturants.length > 0) {
+          message += `\n**Restaurants:**\n`;
+          resturants.forEach(restaurant => {
+            message += `- **${restaurant.name}**\n`;
+            message += `  - Address: ${restaurant.vicinity}\n`;
+            message += `  - Rating: ${restaurant.rating} (${restaurant.user_ratings_total} ratings)\n`;
+            message += `  - Open Now: ${restaurant.opening_hours.open_now ? "Yes" : "No"}\n`;
+          });
+        }
+      
+        return message;
+      }
+      
+      
+      
     const handleStartSession = async () => {
         if (chatSessionId) {
             try {
@@ -68,37 +110,37 @@ export default function Chat() {
     const handleSend = async () => {
         if (!input.trim()) return;
         addMessage(input, "user");
-
+    
         try {
-            const { cur_state, text_content, product_list ,new_place_req} = await continueChat(userId, chatSessionId, input, gender, age);
-
+            const { cur_state, text_content, product_list, new_place_req } = await continueChat(userId, chatSessionId, input, gender, age);
+    
             if (cur_state === "exit") {
                 setIsChatActive(false);
                 addMessage("Chat ended. " + text_content, "bot");
-                if(!new_place_req){
-                    addMessage("Chat ended. " + JSON.stringify(new_place_req), "bot");
+                if(new_place_req){
+                    const formattedMessage = formatPlaceData(new_place_req);
+                    addMessage(formattedMessage, "bot");
                 }
             } else {
                 setCurrentTopic(cur_state);
                 addMessage(text_content, "bot");
-
+    
                 // Fetch product details
                 if (product_list && product_list.length > 0) {
-                    console.log(product_list);
                     const productDetailsPromises = product_list.map(product => {
-                        // Extract the product ID and format the payload
                         const formattedProductId = product.prod_id;
                         return getProductDetails(formattedProductId);
                     });
                     const productsData = await Promise.all(productDetailsPromises);
                     setProducts(productsData); // Store product details in state
+                } else {
+                    setProducts([]); // Clear products if no product list is received
                 }
-                
             }
         } catch (error) {
             console.error('Error sending message:', error);
         }
-
+    
         setInput(''); // Ensure input is cleared after sending
     };
 
@@ -118,10 +160,10 @@ export default function Chat() {
                     {messages.map((msg, idx) => (
                         <div key={idx} className={`mb-2 flex items-start ${msg.sender === "bot" ? "flex-row" : "flex-row-reverse"}`}>
                             {msg.sender === "bot" && (
-                                <Image src="/icons/panda.svg" alt="Panda" width={24} height={24} className="mr-2" />
+                                <Image src="/icons/panda.jpg" alt="Panda" width={24} height={24} className="mr-2" />
                             )}
                             {msg.sender === "user" && (
-                                <Image src="/icons/default-profile.svg" alt="User" width={24} height={24} className="ml-2" />
+                                <Image src="/icons/default-profile.jpg" alt="User" width={24} height={24} className="ml-2" />
                             )}
                             <div className={`inline-block px-4 py-2 border rounded-lg ${msg.sender === "bot" ? COLORS.BOT_LIGHT + " text-white" : COLORS.USER_LIGHT + " border-2 border-red-500"}`}>
                                 {msg.text}
