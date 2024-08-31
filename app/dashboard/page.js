@@ -29,7 +29,7 @@ export default function Dashboard() {
         <BarChart data={data} />
       </div>
     
-      <div className="p-4 bg-white rounded-lg shadow-md">
+      <div className="p-4 rounded-lg shadow-md">here
         <PieChart data={data} />
       </div>
     </div>
