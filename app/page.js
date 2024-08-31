@@ -25,7 +25,7 @@ export default function Home() {
 
   return (
     <div>
-      Hello, {userId} your current active session is {sessionId}
+      {/* Hello, {userId} your current active session is {sessionId} */}
       <div className="container mx-auto p-6 mt-6 bg-gray-100 rounded shadow-md">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
           Authentic Anime Merch & Japanese Products

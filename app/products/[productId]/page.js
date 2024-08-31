@@ -3,34 +3,48 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { getProductDetails } from '../../api/productDetails';
 import Notification from '../../components/Notification'; // Import the Notification component
+import ProductReviewChart from '../../components/ProductReviewChart'; // Import the ProductReviewChart component
 import { useCart } from '../../context/CartContext'; // Import the Cart context
+import { getProductReviewScores } from '@/app/api/productReviewScore';
 
 export default function ProductDetails() {
   const pathname = usePathname();
   const productId = pathname.split('/').pop();
 
   const [product, setProduct] = useState(null);
+  const [reviewScores, setReviewScores] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
-  
+
   const { addToCart } = useCart(); // Access the addToCart function from CartContext
 
   useEffect(() => {
-    if (productId) {
-      const fetchProductDetails = async () => {
-        try {
-          setLoading(true);
-          const data = await getProductDetails(productId);
-          setProduct(data);
-        } catch (error) {
-          setError('Failed to fetch product details.');
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchProductDetails();
-    }
+    if (!productId) return;
+
+    const fetchProductDetails = async () => {
+      try {
+        setLoading(true);
+        const data = await getProductDetails(productId);
+        setProduct(data);
+      } catch (error) {
+        setError('Failed to fetch product details.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchReviewScores = async () => {
+      try {
+        const data = await getProductReviewScores(productId); // Pass productId to getReviewScores
+        setReviewScores(data);
+      } catch (error) {
+        setError('Failed to fetch review scores.');
+      }
+    };
+
+    fetchProductDetails();
+    fetchReviewScores();
   }, [productId]);
 
   const handleAddToCart = () => {
@@ -39,6 +53,53 @@ export default function ProductDetails() {
       setShowNotification(true);
     }
   };
+
+  const parseDescription = (description) => {
+    // Split the description into sections
+    const sections = description.split(/,(?=\s*Specifications of )/);
+  
+    // Extract key features and specifications sections
+    const keyFeaturesSection = sections[0];
+    const specsSection = sections[1] || '';
+  
+    // Extract key features
+    const keyFeatures = keyFeaturesSection.split("Description:")[1]
+      .split("Price:")[0]
+      .trim()
+      .replace(/(?:\r\n|\r|\n)/g, '\n'); // Normalize newlines
+  
+    // Extract specifications and convert them into a JSON-like format
+    let specDetails = [];
+    if (specsSection) {
+      const specsStr = specsSection.split("Specification:")[1].trim();
+  
+      // Manually parse the specification section into an array of [attribute, value]
+      const specsArray = specsStr.match(/\{[^}]+\}/g);
+      if (specsArray) {
+        try {
+          specDetails = JSON.parse(specsArray[0]);
+        } catch (error) {
+          console.error('Failed to parse JSON from specDetails:', error);
+        }
+      }
+    }
+  
+    // Convert the specification details into an array of [attribute, value]
+    const parsedSpecDetails = Array.isArray(specDetails) 
+      ? specDetails 
+      : Object.entries(specDetails);
+  
+    return {
+      keyFeatures,
+      specDetails: parsedSpecDetails
+    };
+  };
+  
+  
+  
+
+  // Ensure the product exists before parsing its description
+  const { keyFeatures, specs, specDetails } = product ? parseDescription(product.compact_description) : { keyFeatures: '', specs: '', specDetails: [] };
 
   if (loading) return <div className="text-center text-gray-500">Loading...</div>;
   if (error) return <div className="text-center text-red-500">{error}</div>;
@@ -95,13 +156,45 @@ export default function ProductDetails() {
               />
             </div>
           </div>
-          <p className="text-lg text-gray-700 mb-4">{product.description}</p>
           
-         
+          {/* Product Description Section */}
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-4">Product Description</h2>
+            <p className="text-lg text-gray-700 mb-4">{specs}</p>
+            
+            <h3 className="text-xl font-semibold mb-2">Key Features</h3>
+            <ul className="list-disc list-inside mb-4">
+              {keyFeatures.split("\n").map((feature, index) => (
+                <li key={index} className="text-gray-600">{feature.trim()}</li>
+              ))}
+            </ul>
+
+            <h3 className="text-xl font-semibold mb-2">Specifications</h3>
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="py-2 px-4 border-b">Attribute</th>
+                  <th className="py-2 px-4 border-b">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {specDetails.map(([attribute, value], index) => (
+                  <tr key={index}>
+                    <td className="py-2 px-4 border-b">{attribute}</td>
+                    <td className="py-2 px-4 border-b">{value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          {/* Display Product Review Scores */}
           
         </div>
       </div>
-              
+      {reviewScores && (
+            <ProductReviewChart data={reviewScores} />
+          )}  
       {/* Show notification when a product is added to the cart */}
       {showNotification && (
         <Notification

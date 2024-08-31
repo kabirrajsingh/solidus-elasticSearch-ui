@@ -7,6 +7,7 @@ import { SessionContext } from '../context/SessionContext';
 import { useAuth } from '@clerk/nextjs';
 import { COLORS } from '../utils/config';
 import ProductCard from '../components/ProductCard';
+import Image from 'next/image';
 
 export default function Chat() {
     const [messages, setMessages] = useState([]);
@@ -49,8 +50,8 @@ export default function Chat() {
         if (chatSessionId) {
             try {
                 await startSession(userId, chatSessionId);
-                addMessage(`Your session ID is ${chatSessionId}`, "user");
-                addMessage("Session started. How can I assist you today?", "bot");
+                addMessage(`Hi. I need some help.`, "user");
+                addMessage("Hi. How can I assist you today?", "bot");
             } catch (error) {
                 console.error('Failed to start session:', error);
             }
@@ -97,13 +98,19 @@ export default function Chat() {
         <div 
             className={`min-h-screen w-full flex flex-col ${COLORS.RAKUTEN_ROSE_BG}`}
         >
-            <div className={`flex-1 flex flex-col w-full mx-auto shadow-lg rounded-lg p-6  bg-white`}>
+            <div className={`flex-1 flex flex-col w-full mx-auto shadow-lg rounded-lg p-6 bg-white`}>
                 <h2 className={`text-xl font-semibold mb-4 text-center ${COLORS.RAKUTEN_RED}`}>
                     {currentTopic || "Chatbot"}
                 </h2>
                 <div className={`flex-1 md:bg-opacity-50 overflow-y-auto p-4 border rounded-lg ${COLORS.BORDER_LIGHT} ${COLORS.INPUT_LIGHT}`} style={backgroundStyle}>
                     {messages.map((msg, idx) => (
-                        <div key={idx} className={`mb-2 rounded-lg ${msg.sender === "bot" ? "text-left" : "text-right"}`}>
+                        <div key={idx} className={`mb-2 flex items-start ${msg.sender === "bot" ? "flex-row" : "flex-row-reverse"}`}>
+                            {msg.sender === "bot" && (
+                                <Image src="/icons/panda.svg" alt="Panda" width={24} height={24} className="mr-2" />
+                            )}
+                            {msg.sender === "user" && (
+                                <Image src="/icons/default-profile.svg" alt="User" width={24} height={24} className="ml-2" />
+                            )}
                             <div className={`inline-block px-4 py-2 border rounded-lg ${msg.sender === "bot" ? COLORS.BOT_LIGHT + " text-white" : COLORS.USER_LIGHT + " border-2 border-red-500"}`}>
                                 {msg.text}
                             </div>
@@ -113,8 +120,9 @@ export default function Chat() {
                     {/* Render Product Cards */}
                     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-80vh mr-20">
                         {products.map((product, index) => (
-                            <div className='w-50 h-50'>
-                            <ProductCard key={index} product={product} /></div>
+                            <div className='w-50 h-50' key={index}>
+                                <ProductCard product={product} />
+                            </div>
                         ))}
                     </div>
 
@@ -124,7 +132,7 @@ export default function Chat() {
                     <div className="flex items-center mt-4">
                         <input 
                             type="text" 
-                            className={` flex-grow px-4 py-2 border rounded-lg placeholder-gray-400 focus:outline-none ${COLORS.INPUT_LIGHT} ${COLORS.RAKUTEN_RED}`} 
+                            className={`flex-grow px-4 py-2 border rounded-lg placeholder-gray-400 focus:outline-none ${COLORS.INPUT_LIGHT} ${COLORS.RAKUTEN_RED}`} 
                             placeholder="Type your message..." 
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
